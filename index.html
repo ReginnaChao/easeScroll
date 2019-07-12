@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style>
+		body{
+		  margin: 0;
+		}
+		
+		a{
+			color: white;
+			text-decoration: none;
+		}
+		a:hover{
+			text-decoration: underline;
+		}
+
+		.box{
+		  min-height: 100vh;
+		  width: 100%;
+		}
+
+		.red{
+		   background-color: #DB4D6D;
+		}
+		.orange{
+		   background-color: #ED784A;
+		}
+		.yellow{
+		   background-color: #F9BF45;
+		}
+		.green{
+		   background-color: #90B44B;
+		}
+		.blue{
+		   background-color: #33A6B8;
+		}
+		.indigo{
+		   background-color: #113285;
+		}
+		.purple{
+		   background-color: #77428D;
+		}
+
+		.box-inner{
+		  background: #ffffff;
+		  border: 1px solid #ccc;
+		  width: 100px;
+		  height: 100px;
+		  margin-left: calc(50% - 50px)
+		}
+	</style>
+</head>
+<body>
+	<div class="wrapper">
+		<div class="box red">
+			<a href="https://www.google.com.tw/" target="_blank">Google</a>
+		</div>
+		<div class="box orange"></div>
+		<div class="box yellow"></div>
+		<div class="box green"></div>
+		<div class="box blue">
+			<div class="box"></div>
+			<div class="box"></div>
+			<div class="box"></div>
+		</div>
+		<div class="box indigo"></div>
+		<div class="box purple"></div>
+	</div>
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+	<script src="jquery.easeScroll.js"></script>
+	<script>
+		(function($, window, document){
+			// EaseScroll 啟動
+			var buildEaseScrollWaitTime = 0;
+			var buildEaseScroll = function(){
+				if($().easeScroll == undefined){
+					// 如果讀取不到easeScroll => 等待 => 十秒後放棄
+					if(buildEaseScrollWaitTime < 10){
+						setTimeout(function(){
+							buildEaseScrollWaitTime++
+							buildEaseScroll();
+						}, 1000)
+					}
+				}else{
+					$("html").easeScroll({
+						frameRate: 60,
+						animationTime: 1000,
+						stepSize: 100,
+						pulseAlgorithm: 1,
+						pulseScale: 6,
+						pulseNormalize: 1,
+						accelerationDelta: 20,
+						accelerationMax: 1,
+						keyboardSupport: true,
+						arrowScroll: 30,
+						touchpadSupport: true,
+						fixedBackground: true
+					});
+				}
+			}
+			buildEaseScroll();
+		})(jQuery, window, document)
+	</script>
+</body>
+</html>
