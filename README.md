@@ -5,13 +5,17 @@ This plugin make the html element scrollable with smooth.
 
 
 ## Install and init
-`<script type="text/javascript" src="/path/to/src/jquery.easeScroll.js"></script>`
-
 
 ### Use jQuery
+```
+<script type="text/javascript" src="/path/to/src/jquery.easeScroll.js"></script>
+```
+
 Basic initialization:
  
-`$("html").easeScroll();`
+```
+$("html").easeScroll();
+```
 
 Custom options:
 
@@ -31,9 +35,15 @@ $("html").easeScroll({
 ```
 
 ### Use Javascript
+```
+<script type="text/javascript" src="/path/to/src/javascript.easeScroll.js"></script>
+```
+
 Basic initialization:
  
-`var es = new easeScroll();`
+```
+var es = new easeScroll();
+```
 
 Custom options:
 
@@ -53,7 +63,11 @@ var es = new easeScroll({
 ```
 
 Destroy easeScroll
-`es.destroy();`
+```
+es.destroy();
+```
 
 Rebuild easeScroll (after destroy)
-`es.build();`
+```
+es.build();
+```
