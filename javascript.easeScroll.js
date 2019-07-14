@@ -252,8 +252,6 @@
 		)
     }
 
-    
-
     var currentHoverTarget,
         esSettings = null,
         b = false,
@@ -297,8 +295,5 @@
         }(),
         isChromeOrIPad = /chrome|iPad/i.test(window.navigator.userAgent),
         hasMouseWheel = "onmousewheel" in document;
-
-    
-
 
 })();

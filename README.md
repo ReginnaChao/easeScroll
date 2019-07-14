@@ -8,7 +8,7 @@ This plugin make the html element scrollable with smooth.
 
 ### Use jQuery
 ```
-<script type="text/javascript" src="/path/to/src/jquery.easeScroll.js"></script>
+<script type="text/javascript" src="/path/to/src/jquery.easeScroll.min.js"></script>
 ```
 
 Basic initialization:
@@ -36,7 +36,7 @@ $("html").easeScroll({
 
 ### Use Javascript
 ```
-<script type="text/javascript" src="/path/to/src/javascript.easeScroll.js"></script>
+<script type="text/javascript" src="/path/to/src/javascript.easeScroll.min.js"></script>
 ```
 
 Basic initialization:
