@@ -1,0 +1,46 @@
+body{
+    margin: 0;
+}
+
+a{
+    color: white;
+    text-decoration: none;
+}
+a:hover{
+    text-decoration: underline;
+}
+
+.box{
+    min-height: 100vh;
+    width: 100%;
+}
+
+.red{
+    background-color: #DB4D6D;
+}
+.orange{
+    background-color: #ED784A;
+}
+.yellow{
+    background-color: #F9BF45;
+}
+.green{
+    background-color: #90B44B;
+}
+.blue{
+    background-color: #33A6B8;
+}
+.indigo{
+    background-color: #113285;
+}
+.purple{
+    background-color: #77428D;
+}
+
+.box-inner{
+    background: #ffffff;
+    border: 1px solid #ccc;
+    width: 100px;
+    height: 100px;
+    margin-left: calc(50% - 50px)
+}

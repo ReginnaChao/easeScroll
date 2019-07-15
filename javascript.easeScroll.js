@@ -2,9 +2,7 @@
     'use strict'
 
     // Build Plugin
-    var easeScroll = function () {
-
-        this.isDestroy = false;
+    var EaseScroll = function () {
 
         // Define option defaults
         var defaults = {
@@ -34,14 +32,14 @@
     }
 
     // Public Methods
-    easeScroll.prototype.destroy = function() {
+    EaseScroll.prototype.destroy = function() {
         destroy();
-        this.isDestroy = true;
+        isDestroy = true;
         loaded = false
     }
 
-    easeScroll.prototype.build = function() {
-        if(this.isDestroy) init();
+    EaseScroll.prototype.build = function() {
+        if(isDestroy) init();
     }
 
 
@@ -85,6 +83,7 @@
             }
             C = +new Date
         }
+        console.log(scrollTarget, scrollX, scrollY)
         if (M.push({
             x: scrollX,
             y: scrollY,
@@ -265,6 +264,7 @@
             y: 0
         },
         loaded = false,
+        isDestroy = false,
         scrollMainEl = document.documentElement,
         D = [120, 120, 120],
         key = {
@@ -300,6 +300,6 @@
         isChromeOrIPad = /chrome|iPad/i.test(window.navigator.userAgent),
         hasMouseWheel = "onmousewheel" in document;
 
-    window.easeScroll = easeScroll;
+    window.EaseScroll = EaseScroll;
 
 })();

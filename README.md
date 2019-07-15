@@ -34,6 +34,8 @@ $("html").easeScroll({
 });
 ```
 
+---
+
 ### Use Javascript
 ```
 <script type="text/javascript" src="/path/to/src/javascript.easeScroll.min.js"></script>
@@ -42,24 +44,32 @@ $("html").easeScroll({
 Basic initialization:
  
 ```
-var es = new easeScroll();
+var options = { /* ... */}
+var easeScroll = new EaseScroll(options);
 ```
 
-Custom options:
-
+Destroy easeScroll
 ```
-var es = new easeScroll({
-  frameRate: 60,
-  animationTime: 1000,
-  stepSize: 120,
-  pulseAlgorithm: !0,
-  pulseScale: 8,
-  pulseNormalize: 1,
-  accelerationDelta: 20,
-  accelerationMax: 1,
-  keyboardSupport: !0,
-  arrowScroll: 50
-});
+easeScroll.destroy();
+```
+
+Rebuild easeScroll (after destroy)
+```
+easeScroll.build();
+```
+
+---
+
+### Use Module
+```
+import EaseScroll from '/path/to/src/module.easeScroll.js'
+```
+
+Basic initialization:
+ 
+```
+var options = { /* ... */}
+var easeScroll = new EaseScroll(options);
 ```
 
 Destroy easeScroll

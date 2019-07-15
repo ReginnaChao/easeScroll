@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>EaseScroll - Javascript</title>
+    <title>EaseScroll - Module</title>
     <link rel="stylesheet" href="demo.css">
 </head>
 <body>
@@ -23,26 +23,23 @@
         <div class="box indigo"></div>
         <div class="box purple"></div>
     </div>
-    <script src="../javascript.easeScroll.min.js"></script>
-    <script>
-        (function(){
-            // EaseScroll init
-            var options = {
-                frameRate: 60,
-                animationTime: 1000,
-                stepSize: 100,
-                pulseAlgorithm: 1,
-                pulseScale: 6,
-                pulseNormalize: 1,
-                accelerationDelta: 20,
-                accelerationMax: 1,
-                keyboardSupport: true,
-                arrowScroll: 30,
-                touchpadSupport: true,
-                fixedBackground: true
-            };
-            var easeScroll = new EaseScroll(options);
-        })()
+    <script type="module">
+        import EaseScroll from '../module.es.easeScroll.js'
+        const options = {
+            frameRate: 60,
+            animationTime: 1000,
+            stepSize: 100,
+            pulseAlgorithm: 1,
+            pulseScale: 6,
+            pulseNormalize: 1,
+            accelerationDelta: 20,
+            accelerationMax: 1,
+            keyboardSupport: true,
+            arrowScroll: 30,
+            touchpadSupport: true,
+            fixedBackground: true
+        }
+        const easeScroll = new EaseScroll(options);
     </script>
 </body>
 </html>
