@@ -1,7 +1,8 @@
 (function(){
+    'use strict'
 
     // Build Plugin
-    this.easeScroll = function () {
+    var easeScroll = function () {
 
         this.isDestroy = false;
 
@@ -21,19 +22,22 @@
             fixedBackground: true
         }
 
-       // Create options by extending defaults with the passed in arguments
-       if (arguments[0] && typeof arguments[0] === "object") {
-           this.options = extendDefaults(defaults, arguments[0]);
-           esSettings = this.options;
-       }
+        // Create options by extending defaults with the passed in arguments
+        if (arguments[0] && typeof arguments[0] === "object") {
+            this.options = extendDefaults(defaults, arguments[0]);
+        } else {
+            this.options = defaults
+        }
+        esSettings = this.options;
 
-       init();
+        init();
     }
 
     // Public Methods
     easeScroll.prototype.destroy = function() {
         destroy();
         this.isDestroy = true;
+        loaded = false
     }
 
     easeScroll.prototype.build = function() {
@@ -176,7 +180,8 @@
         var t = [],
             o = scrollMainEl.scrollHeight;
         do {
-            var n = z[N(el)];
+            var n = z[N(el)],
+                overflow;
             if (n) return i(t, n);
             if (t.push(el), o === el.scrollHeight) {
                 if (!isInIframe || scrollMainEl.clientHeight + 10 < o) return i(t, document.body)
@@ -247,7 +252,6 @@
         hasMouseWheel && isChromeOrIPad && (
 			removeEventListener("mousedown", mouseDownHandler),
 			removeEventListener("mousewheel", mouseWheelHandler),
-            removeEventListener("load", loadedHandler),
             removeEventListener("keydown", keyDownHandler)
 		)
     }
@@ -295,5 +299,7 @@
         }(),
         isChromeOrIPad = /chrome|iPad/i.test(window.navigator.userAgent),
         hasMouseWheel = "onmousewheel" in document;
+
+    window.easeScroll = easeScroll;
 
 })();
