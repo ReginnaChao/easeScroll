@@ -31,19 +31,31 @@
         init();
     }
 
+    // -----------------
     // Public Methods
-    EaseScroll.prototype.destroy = function() {
-        destroy();
-        isDestroy = true;
-        loaded = false
+    EaseScroll.prototype.destroy = destroy();
+    EaseScroll.prototype.build = build();
+
+    // -----------------
+    // Private Methods
+
+    function init () {
+        addEventListener("mousedown", mouseDownHandler);
+        addEventListener(wheelEvent, mouseWheelHandler, {passive: false});
+        addEventListener("load", loadedHandler);
     }
 
-    EaseScroll.prototype.build = function() {
+    function destroy () {
+        removeEventListener("mousedown", mouseDownHandler);
+        removeEventListener(wheelEvent, mouseWheelHandler);
+        removeEventListener("keydown", keyDownHandler);
+        isDestroy = true;
+        loaded = false;
+    }
+
+    function build () {
         if(isDestroy) init();
     }
-
-
-    // Private Methods
 
     function keyListenerHandler() {
         var hasBuilded = false;
@@ -83,7 +95,6 @@
             }
             C = +new Date
         }
-        console.log(scrollTarget, scrollX, scrollY)
         if (M.push({
             x: scrollX,
             y: scrollY,
@@ -114,9 +125,17 @@
         var mouseWheelTarget = event.target,
             scrollTarget = l(mouseWheelTarget);
         if (!scrollTarget || event.defaultPrevented || checkTagName(currentHoverTarget, "embed") || checkTagName(mouseWheelTarget, "embed") && /\.pdf/i.test(mouseWheelTarget.src)) return true;
-        var scrollX = event.wheelDeltaX || 0,
-            scrollY = event.wheelDeltaY || 0;
-        return scrollX || scrollY || (scrollY = event.wheelDelta || 0), !esSettings.touchpadSupport && f(scrollY) ? true : (Math.abs(scrollX) > 1.2 && (scrollX *= esSettings.stepSize / 120), Math.abs(scrollY) > 1.2 && (scrollY *= esSettings.stepSize / 120), scrollControlHandler(scrollTarget, -scrollX, -scrollY), void event.preventDefault())
+        var scrollX = event.wheelDeltaX || -event.deltaX * 40 || 0,
+            scrollY = event.wheelDeltaY || -event.deltaY * 40 || 0;
+        return (
+            scrollX || scrollY || (scrollY = event.wheelDelta || 0),
+            !esSettings.touchpadSupport && f(scrollY)
+                ? true
+                : (Math.abs(scrollX) > 1.2 && (scrollX *= esSettings.stepSize / 120),
+                  Math.abs(scrollY) > 1.2 && (scrollY *= esSettings.stepSize / 120),
+                  scrollControlHandler(scrollTarget, -scrollX, -scrollY),
+                  void event.preventDefault())
+        )
     }
 
     function keyDownHandler(event) {
@@ -239,22 +258,6 @@
         return source;
     }
 
-    function init(){
-        hasMouseWheel && isChromeOrIPad && (
-			addEventListener("mousedown", mouseDownHandler),
-			addEventListener("mousewheel", mouseWheelHandler, {passive: false}),
-			addEventListener("load", loadedHandler)
-		)
-    }
-
-    function destroy(){
-        hasMouseWheel && isChromeOrIPad && (
-			removeEventListener("mousedown", mouseDownHandler),
-			removeEventListener("mousewheel", mouseWheelHandler),
-            removeEventListener("keydown", keyDownHandler)
-		)
-    }
-
     var currentHoverTarget,
         esSettings = null,
         b = false,
@@ -291,14 +294,26 @@
             return function(t) {
                 return t.uniqueID || (t.uniqueID = e++)
             }
-        }(),
-        requestAnimationFrame = function() {
-            return window.requestAnimationFrame || window.webkitRequestAnimationFrame || function(callback, target, delay) {
-                window.setTimeout(callback, delay || 1000 / 60)
-            }
-        }(),
-        isChromeOrIPad = /chrome|iPad/i.test(window.navigator.userAgent),
-        hasMouseWheel = "onmousewheel" in document;
+        }();
+
+    var requestAnimationFrame =
+        window.requestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function(callback, target, delay) {
+            window.setTimeout(callback, delay || 1000 / 60)
+        }
+    window.requestAnimationFrame = requestAnimationFrame;
+
+    var wheelEvent = 'onwheel' in document
+        // spec event type
+        ? 'wheel'
+        : document.onmousewheel !== undefined
+            // legacy event type
+            ? 'mousewheel'
+            // older Firefox
+            : 'DOMMouseScroll';
 
     window.EaseScroll = EaseScroll;
 

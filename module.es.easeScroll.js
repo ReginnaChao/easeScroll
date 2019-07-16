@@ -30,23 +30,19 @@ const EaseScroll = function() {
 // Private Methods
 
 function init() {
-    if (hasMouseWheel && isChromeOrIPad) {
-        addEventListener('mousedown', mouseDownHandler);
-        addEventListener('mousewheel', mouseWheelHandler, { passive: false });
-        addEventListener('load', loadedHandler);
-    }
+    addEventListener('mousedown', mouseDownHandler);
+    addEventListener(wheelEvent, mouseWheelHandler, { passive: false });
+    addEventListener('load', loadedHandler);
 }
 
 function destroy() {
-    if (hasMouseWheel && isChromeOrIPad) {
-        removeEventListener('mousedown', mouseDownHandler);
-        removeEventListener('mousewheel', mouseWheelHandler);
-        removeEventListener('keydown', keyDownHandler);
-    }
+    removeEventListener('mousedown', mouseDownHandler);
+    removeEventListener(wheelEvent, mouseWheelHandler);
+    removeEventListener('keydown', keyDownHandler);
     isDestroy = true;
+    loaded = false;
 }
 
-// After Destroy
 function build() {
     if (isDestroy) init();
 }
@@ -172,8 +168,8 @@ function mouseWheelHandler(event) {
         (checkTagName(mouseWheelTarget, 'embed') && /\.pdf/i.test(mouseWheelTarget.src))
     )
         return true;
-    let scrollX = event.wheelDeltaX || 0;
-    let scrollY = event.wheelDeltaY || 0;
+    let scrollX = event.wheelDeltaX || -event.deltaX * 40 || 0;
+    let scrollY = event.wheelDeltaY || -event.deltaY * 40 || 0;
     return (
         scrollX || scrollY || (scrollY = event.wheelDelta || 0),
         !esSettings.touchpadSupport && f(scrollY)
@@ -371,5 +367,14 @@ window.requestAnimationFrame = requestAnimationFrame;
 
 const isChromeOrIPad = /chrome|iPad/i.test(window.navigator.userAgent);
 const hasMouseWheel = 'onmousewheel' in document;
+
+var wheelEvent = 'onwheel' in document
+    // spec event type
+    ? 'wheel'
+    : document.onmousewheel !== undefined
+        // legacy event type
+        ? 'mousewheel'
+        // older Firefox
+        : 'DOMMouseScroll';
 
 export default EaseScroll;
