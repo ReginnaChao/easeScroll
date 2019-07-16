@@ -33,8 +33,8 @@
 
     // -----------------
     // Public Methods
-    EaseScroll.prototype.destroy = destroy();
-    EaseScroll.prototype.build = build();
+    EaseScroll.prototype.destroy = destroy;
+    EaseScroll.prototype.build = build;
 
     // -----------------
     // Private Methods

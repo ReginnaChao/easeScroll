@@ -1,7 +1,4 @@
 const EaseScroll = function() {
-    // Methods
-    this.build = build;
-    this.destroy = destroy;
 
     // Define option defaults
     const defaults = {
@@ -25,6 +22,11 @@ const EaseScroll = function() {
 
     init();
 }
+
+// -----------------
+// Public Methods
+EaseScroll.prototype.destroy = destroy;
+EaseScroll.prototype.build = build;
 
 // -----------------
 // Private Methods
