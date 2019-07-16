@@ -1,3 +1,8 @@
+// 未修正：
+// FF、IE9+
+// Home Key
+// Destroy & Rebuild
+// requestAnimationFrame改寫
 $.fn.easeScroll = function(options) {
 	! function() {
 		function keyListenerHandler() {

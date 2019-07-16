@@ -367,9 +367,6 @@ const requestAnimationFrame =
     }
 window.requestAnimationFrame = requestAnimationFrame;
 
-const isChromeOrIPad = /chrome|iPad/i.test(window.navigator.userAgent);
-const hasMouseWheel = 'onmousewheel' in document;
-
 var wheelEvent = 'onwheel' in document
     // spec event type
     ? 'wheel'

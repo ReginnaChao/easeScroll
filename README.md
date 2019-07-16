@@ -60,7 +60,7 @@ easeScroll.build();
 
 ---
 
-### Use Module
+### Use ES Module
 ```
 import EaseScroll from '/path/to/src/module.easeScroll.js'
 ```
@@ -68,16 +68,16 @@ import EaseScroll from '/path/to/src/module.easeScroll.js'
 Basic initialization:
  
 ```
-var options = { /* ... */}
+var options = { /* ... */ }
 var easeScroll = new EaseScroll(options);
 ```
 
 Destroy easeScroll
 ```
-es.destroy();
+easeScroll.destroy();
 ```
 
 Rebuild easeScroll (after destroy)
 ```
-es.build();
+easeScroll.build();
 ```
