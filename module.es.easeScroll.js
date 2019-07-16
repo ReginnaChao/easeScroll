@@ -218,7 +218,6 @@ function keyDownHandler(event) {
             scrollY = 0.9 * scrollTargetHeight;
             break
         case key.home:
-            // [Bug] Body is not working
             scrollY = (scrollTarget !== document.body) ? -scrollTarget.scrollTop : -document.documentElement.scrollTop;
             break
         case key.end:
