@@ -167,10 +167,11 @@
                 break;
             case key.home:
                 // [Bug] Body is not working
-                scrollY = -scrollTarget.scrollTop;
+                scrollY = (scrollTarget !== document.body) ? -scrollTarget.scrollTop : -document.documentElement.scrollTop;
                 break;
             case key.end:
-                var distance = scrollTarget.scrollHeight - scrollTarget.scrollTop - scrollTargetHeight;
+                var scrollTop = (scrollTarget !== document.body) ? scrollTarget.scrollTop : document.documentElement.scrollTop;
+                var distance = scrollTarget.scrollHeight - scrollTop - scrollTargetHeight;
                 scrollY = distance > 0 ? distance + 10 : 0;
                 break;
             case key.left:
