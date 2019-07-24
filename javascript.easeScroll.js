@@ -146,7 +146,7 @@
         var direction,
             scrollX = 0,
             scrollY = 0,
-            scrollTarget = l(currentHoverTarget),
+            scrollTarget = l(currentHoverTarget) || document.body,
             scrollTargetHeight = scrollTarget.clientHeight;
         switch (scrollTarget === document.body && (scrollTargetHeight = window.innerHeight), event.keyCode) {
             case key.up:

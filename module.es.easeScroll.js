@@ -198,7 +198,7 @@ function keyDownHandler(event) {
     let direction;
     let scrollX = 0;
     let scrollY = 0;
-    const scrollTarget = l(currentHoverTarget);
+    const scrollTarget = l(currentHoverTarget) || document.body;
     let scrollTargetHeight = scrollTarget.clientHeight;
     switch ((scrollTarget === document.body && (scrollTargetHeight = window.innerHeight), event.keyCode)) {
         case key.up:
