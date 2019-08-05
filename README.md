@@ -20,7 +20,7 @@ $("html").easeScroll();
 Custom options:
 
 ```
-$("html").easeScroll({
+var es = $("html").easeScroll({
   frameRate: 60,
   animationTime: 1000,
   stepSize: 120,
@@ -42,8 +42,17 @@ $("html").easeScroll({
     IE: true,
     Edge: true
   }
-  
 });
+```
+
+Destroy easeScroll
+```
+es.destroy();
+```
+
+Rebuild easeScroll (after destroy)
+```
+es.build();
 ```
 
 ---
@@ -57,22 +66,26 @@ Basic initialization:
  
 ```
 var options = { /* ... */}
-var easeScroll = new EaseScroll(options);
+var es = new EaseScroll(options);
 ```
 
 Destroy easeScroll
 ```
-easeScroll.destroy();
+es.destroy();
 ```
 
 Rebuild easeScroll (after destroy)
 ```
-easeScroll.build();
+es.build();
 ```
 
 ---
 
 ### Use ES Module
+
+In case you use it as an ES module make sure:
+* you have enabled Babel or Buble to transpile it to ES5 syntax
+
 ```
 import EaseScroll from '/path/to/src/module.easeScroll.js'
 ```
@@ -81,15 +94,15 @@ Basic initialization:
  
 ```
 var options = { /* ... */ }
-var easeScroll = new EaseScroll(options);
+var es = new EaseScroll(options);
 ```
 
 Destroy easeScroll
 ```
-easeScroll.destroy();
+es.destroy();
 ```
 
 Rebuild easeScroll (after destroy)
 ```
-easeScroll.build();
+es.build();
 ```
