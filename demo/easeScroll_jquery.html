@@ -24,37 +24,24 @@
 	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 	<script src="../jquery.easeScroll.js"></script>
 	<script>
-		(function($, window, document){
+		$(function(){
 			// EaseScroll init
-			var buildEaseScrollWaitTime = 0;
-			var buildEaseScroll = function(){
-				if($().easeScroll == undefined){
-					// if easeScroll is undefined => test 10 times => 10 seconds give up
-					if(buildEaseScrollWaitTime < 10){
-						setTimeout(function(){
-							buildEaseScrollWaitTime++
-							buildEaseScroll();
-						}, 1000)
-					}
-				}else{
-					var easeScroll = $("html").easeScroll({
-						frameRate: 60,
-						animationTime: 1000,
-						stepSize: 100,
-						pulseAlgorithm: 1,
-						pulseScale: 6,
-						pulseNormalize: 1,
-						accelerationDelta: 20,
-						accelerationMax: 1,
-						keyboardSupport: true,
-						arrowScroll: 30,
-						touchpadSupport: true,
-						fixedBackground: true
-					});
-				}
+			var option = {
+				frameRate: 60,
+				animationTime: 1000,
+				stepSize: 100,
+				pulseAlgorithm: 1,
+				pulseScale: 6,
+				pulseNormalize: 1,
+				accelerationDelta: 20,
+				accelerationMax: 1,
+				keyboardSupport: true,
+				arrowScroll: 30,
+				touchpadSupport: true,
+				fixedBackground: true
 			}
-			buildEaseScroll();
-		})(jQuery, window, document)
+			var es = $("html").easeScroll(option);
+		});
 	</script>
 </body>
 </html>

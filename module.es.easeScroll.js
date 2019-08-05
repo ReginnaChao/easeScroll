@@ -13,12 +13,22 @@ const EaseScroll = function() {
         keyboardSupport: true,
         arrowScroll: 50,
         touchpadSupport: true,
-        fixedBackground: true
+        fixedBackground: true,
+        browser: {
+            Chrome: true,
+            FireFox: true,
+            Safari: true,
+            IE: true,
+            Edge: true
+        }
     };
 
     this.options = { ...defaults, ...arguments[0] };
+    this.options.browser = { ...defaults.browser, ...arguments[0].browser };
 
     esSettings = this.options;
+
+    currentBrowserBuildAllow = esSettings.browser[currentBrowser];
 
     init();
 }
@@ -32,12 +42,14 @@ EaseScroll.prototype.build = build;
 // Private Methods
 
 function init() {
+    if (!currentBrowserBuildAllow) return false;
     addEventListener('mousedown', mouseDownHandler);
     addEventListener(wheelEvent, mouseWheelHandler, { passive: false });
     addEventListener('load', loadedHandler);
 }
 
 function destroy() {
+    if (!currentBrowserBuildAllow) return false;
     removeEventListener('mousedown', mouseDownHandler);
     removeEventListener(wheelEvent, mouseWheelHandler);
     removeEventListener('keydown', keyDownHandler);
@@ -221,7 +233,7 @@ function keyDownHandler(event) {
             scrollY = (scrollTarget !== document.body) ? -scrollTarget.scrollTop : -document.documentElement.scrollTop;
             break
         case key.end:
-            var scrollTop = (scrollTarget !== document.body) ? scrollTarget.scrollTop : document.documentElement.scrollTop;
+            const scrollTop = (scrollTarget !== document.body) ? scrollTarget.scrollTop : document.documentElement.scrollTop;
             const distance = scrollTarget.scrollHeight - scrollTop - scrollTargetHeight;
             scrollY = distance > 0 ? distance + 10 : 0;
             break
@@ -367,7 +379,7 @@ const requestAnimationFrame =
     }
 window.requestAnimationFrame = requestAnimationFrame;
 
-var wheelEvent = 'onwheel' in document
+const wheelEvent = 'onwheel' in document
     // spec event type
     ? 'wheel'
     : document.onmousewheel !== undefined
@@ -375,5 +387,34 @@ var wheelEvent = 'onwheel' in document
         ? 'mousewheel'
         // older Firefox
         : 'DOMMouseScroll';
+
+// Browser Detect
+// Firefox 1.0+
+const isFirefox = typeof InstallTrigger !== 'undefined';
+// Safari 3.0+ "[object HTMLElementConstructor]"
+const isSafari =
+    /constructor/i.test(window.HTMLElement) ||
+    (function(p) {
+        return p.toString() === '[object SafariRemoteNotification]'
+    })(!window.safari || (typeof window.safari !== 'undefined' && window.safari.pushNotification));
+// Internet Explorer 6-11
+const isIE = /* @cc_on!@ */ false || !!document.documentMode;
+// Edge 20+
+const isEdge = !isIE && !!window.StyleMedia;
+// Chrome 1 - 71
+const isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
+const currentBrowser = isFirefox
+    ? 'FireFox'
+    : isSafari
+    ? 'Safari'
+    : isIE
+    ? 'IE'
+    : isEdge
+    ? 'Edge'
+    : isChrome
+    ? 'Chrome'
+    : null;
+let currentBrowserBuildAllow = false;
+// [End] Browser Detect
 
 export default EaseScroll;

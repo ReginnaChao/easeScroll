@@ -17,7 +17,14 @@
             keyboardSupport: true,
             arrowScroll: 50,
             touchpadSupport: true,
-            fixedBackground: true
+            fixedBackground: true,
+            browser: {
+                Chrome: true,
+                FireFox: true,
+                Safari: true,
+                IE: true,
+                Edge: true
+            }
         }
 
         // Create options by extending defaults with the passed in arguments
@@ -26,7 +33,16 @@
         } else {
             this.options = defaults
         }
+        // Browser Setting
+        if (arguments[0].browser && typeof arguments[0].browser === "object") {
+            this.options.browser = extendDefaults(defaults.browser, arguments[0].browser);
+        } else {
+            this.options.browser = defaults.browser
+        }
+
         esSettings = this.options;
+
+        currentBrowserBuildAllow = esSettings.browser[currentBrowser];
 
         init();
     }
@@ -40,12 +56,14 @@
     // Private Methods
 
     function init () {
+        if (!currentBrowserBuildAllow) return false;
         addEventListener("mousedown", mouseDownHandler);
         addEventListener(wheelEvent, mouseWheelHandler, {passive: false});
         addEventListener("load", loadedHandler);
     }
 
     function destroy () {
+        if (!currentBrowserBuildAllow) return false;
         removeEventListener("mousedown", mouseDownHandler);
         removeEventListener(wheelEvent, mouseWheelHandler);
         removeEventListener("keydown", keyDownHandler);
@@ -166,7 +184,6 @@
                 scrollY = .9 * scrollTargetHeight;
                 break;
             case key.home:
-                // [Bug] Body is not working
                 scrollY = (scrollTarget !== document.body) ? -scrollTarget.scrollTop : -document.documentElement.scrollTop;
                 break;
             case key.end:
@@ -315,6 +332,35 @@
             ? 'mousewheel'
             // older Firefox
             : 'DOMMouseScroll';
+
+    // Browser Detect
+    // Firefox 1.0+
+    var isFirefox = typeof InstallTrigger !== 'undefined';
+    // Safari 3.0+ "[object HTMLElementConstructor]"
+    var isSafari =
+        /constructor/i.test(window.HTMLElement) ||
+        (function(p) {
+            return p.toString() === '[object SafariRemoteNotification]'
+        })(!window.safari || (typeof window.safari !== 'undefined' && window.safari.pushNotification));
+    // Internet Explorer 6-11
+    var isIE = /* @cc_on!@ */ false || !!document.documentMode;
+    // Edge 20+
+    var isEdge = !isIE && !!window.StyleMedia;
+    // Chrome 1 - 71
+    var isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
+    var currentBrowser = isFirefox
+        ? 'FireFox'
+        : isSafari
+        ? 'Safari'
+        : isIE
+        ? 'IE'
+        : isEdge
+        ? 'Edge'
+        : isChrome
+        ? 'Chrome'
+        : null;
+    var currentBrowserBuildAllow = false;
+    // [End] Browser Detect
 
     window.EaseScroll = EaseScroll;
 

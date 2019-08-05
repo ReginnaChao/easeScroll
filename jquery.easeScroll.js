@@ -1,10 +1,30 @@
-// 未修正：
-// FF、IE9+
-// Home Key
-// Destroy & Rebuild
-// requestAnimationFrame改寫
 $.fn.easeScroll = function(options) {
+
+	var _this = this;
+
 	! function() {
+
+		function init () {
+			console.log(currentBrowserBuildAllow)
+			if (!currentBrowserBuildAllow) return false;
+			addEventListener("mousedown", mouseDownHandler);
+			addEventListener(wheelEvent, mouseWheelHandler, {passive: false});
+			addEventListener("load", loadedHandler);
+		}
+
+		function destroy () {
+			if (!currentBrowserBuildAllow) return false;
+			removeEventListener("mousedown", mouseDownHandler);
+			removeEventListener(wheelEvent, mouseWheelHandler);
+			removeEventListener("keydown", keyDownHandler);
+			isDestroy = true;
+			loaded = false;
+		}
+
+		function build () {
+			if(isDestroy) init();
+		}
+
 		function keyListenerHandler() {
 			var hasBuilded = false;
 			hasBuilded && removeEventListener("keydown", keyDownHandler), esSettings.keyboardSupport && !hasBuilded && addEventListener("keydown", keyDownHandler)
@@ -73,9 +93,17 @@ $.fn.easeScroll = function(options) {
 			var mouseWheelTarget = event.target,
 				scrollTarget = l(mouseWheelTarget);
 			if (!scrollTarget || event.defaultPrevented || checkTagName(currentHoverTarget, "embed") || checkTagName(mouseWheelTarget, "embed") && /\.pdf/i.test(mouseWheelTarget.src)) return true;
-			var scrollX = event.wheelDeltaX || 0,
-				scrollY = event.wheelDeltaY || 0;
-			return scrollX || scrollY || (scrollY = event.wheelDelta || 0), !esSettings.touchpadSupport && f(scrollY) ? true : (Math.abs(scrollX) > 1.2 && (scrollX *= esSettings.stepSize / 120), Math.abs(scrollY) > 1.2 && (scrollY *= esSettings.stepSize / 120), scrollControlHandler(scrollTarget, -scrollX, -scrollY), void event.preventDefault())
+			var scrollX = event.wheelDeltaX || -event.deltaX * 40 || 0,
+				scrollY = event.wheelDeltaY || -event.deltaY * 40 || 0;
+			return (
+				scrollX || scrollY || (scrollY = event.wheelDelta || 0),
+				!esSettings.touchpadSupport && f(scrollY)
+					? true
+					: (Math.abs(scrollX) > 1.2 && (scrollX *= esSettings.stepSize / 120),
+					  Math.abs(scrollY) > 1.2 && (scrollY *= esSettings.stepSize / 120),
+					  scrollControlHandler(scrollTarget, -scrollX, -scrollY),
+					  void event.preventDefault())
+			)
 		}
 
 		function keyDownHandler(event) {
@@ -106,8 +134,7 @@ $.fn.easeScroll = function(options) {
 					scrollY = .9 * scrollTargetHeight;
 					break;
 				case key.home:
-					// [Bug] Body is not working
-					scrollY = -scrollTarget.scrollTop;
+					scrollY = (scrollTarget !== document.body) ? -scrollTarget.scrollTop : -document.documentElement.scrollTop;
 					break;
 				case key.end:
 					var distance = scrollTarget.scrollHeight - scrollTarget.scrollTop - scrollTargetHeight;
@@ -186,7 +213,7 @@ $.fn.easeScroll = function(options) {
 			return e >= 1 ? 1 : 0 >= e ? 0 : (1 == esSettings.pulseNormalize && (esSettings.pulseNormalize /= m(1)), m(e))
 		}
 
-		var settings = $.extend({
+		var settings = $.extend(true, {
 			// These are the defaults.
 			frameRate: 60,
 			animationTime: 1000,
@@ -199,7 +226,14 @@ $.fn.easeScroll = function(options) {
 			keyboardSupport: true,
 			arrowScroll: 50,
 			touchpadSupport: true,
-			fixedBackground: true
+			fixedBackground: true,
+			browser: {
+				Chrome: true,
+				FireFox: true,
+				Safari: true,
+				IE: true,
+				Edge: true
+			}
 		}, options );
 
 		var currentHoverTarget,
@@ -216,6 +250,13 @@ $.fn.easeScroll = function(options) {
 				arrowScroll: settings.arrowScroll,
 				touchpadSupport: settings.touchpadSupport,
 				fixedBackground: settings.fixedBackground,
+				browser: {
+					Chrome: settings.browser.Chrome,
+					FireFox: settings.browser.FireFox,
+					Safari: settings.browser.Safari,
+					IE: settings.browser.IE,
+					Edge: settings.browser.Edge
+				},
 				excluded: ""
 			},
 			esSettings = globalSettings,
@@ -226,6 +267,7 @@ $.fn.easeScroll = function(options) {
 				y: 0
 			},
 			loaded = false,
+			isDestroy = false,
 			scrollMainEl = document.documentElement,
 			D = [120, 120, 120],
 			key = {
@@ -252,18 +294,63 @@ $.fn.easeScroll = function(options) {
 				return function(t) {
 					return t.uniqueID || (t.uniqueID = e++)
 				}
-			}(),
-			requestAnimationFrame = function() {
-				return window.requestAnimationFrame || window.webkitRequestAnimationFrame || function(callback, target, delay) {
-					window.setTimeout(callback, delay || 1000 / 60)
-				}
-			}(),
-			isChromeOrIPad = /chrome|iPad/i.test(window.navigator.userAgent),
-			hasMouseWheel = "onmousewheel" in document;
-		hasMouseWheel && isChromeOrIPad && (
-			addEventListener("mousedown", mouseDownHandler),
-			addEventListener("mousewheel", mouseWheelHandler, {passive: false}),
-			addEventListener("load", loadedHandler)
-		)
+			}();
+
+		var requestAnimationFrame =
+			window.requestAnimationFrame ||
+			window.mozRequestAnimationFrame ||
+			window.webkitRequestAnimationFrame ||
+			window.msRequestAnimationFrame ||
+			function(callback, target, delay) {
+				window.setTimeout(callback, delay || 1000 / 60)
+			}
+		window.requestAnimationFrame = requestAnimationFrame;
+
+		var wheelEvent = 'onwheel' in document
+			// spec event type
+			? 'wheel'
+			: document.onmousewheel !== undefined
+				// legacy event type
+				? 'mousewheel'
+				// older Firefox
+				: 'DOMMouseScroll';
+
+		// Browser Detect
+		// Firefox 1.0+
+		var isFirefox = typeof InstallTrigger !== 'undefined';
+		// Safari 3.0+ "[object HTMLElementConstructor]"
+		var isSafari =
+			/constructor/i.test(window.HTMLElement) ||
+			(function(p) {
+				return p.toString() === '[object SafariRemoteNotification]'
+			})(!window.safari || (typeof window.safari !== 'undefined' && window.safari.pushNotification));
+		// Internet Explorer 6-11
+		var isIE = /* @cc_on!@ */ false || !!document.documentMode;
+		// Edge 20+
+		var isEdge = !isIE && !!window.StyleMedia;
+		// Chrome 1 - 71
+		var isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
+		var currentBrowser = isFirefox
+			? 'FireFox'
+			: isSafari
+			? 'Safari'
+			: isIE
+			? 'IE'
+			: isEdge
+			? 'Edge'
+			: isChrome
+			? 'Chrome'
+			: null;
+		var currentBrowserBuildAllow = esSettings.browser[currentBrowser];
+		// [End] Browser Detect
+
+		init();
+
+		_this.destroy = destroy;
+		_this.build = build;
+
 	}();
+
+	return _this;
+
 }
