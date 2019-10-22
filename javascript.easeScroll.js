@@ -152,7 +152,7 @@
                 : (Math.abs(scrollX) > 1.2 && (scrollX *= esSettings.stepSize / 120),
                   Math.abs(scrollY) > 1.2 && (scrollY *= esSettings.stepSize / 120),
                   scrollControlHandler(scrollTarget, -scrollX, -scrollY),
-                  void event.preventDefault())
+                  event.preventDefault())
         )
     }
 
@@ -186,11 +186,12 @@
             case key.home:
                 scrollY = (scrollTarget !== document.body) ? -scrollTarget.scrollTop : -document.documentElement.scrollTop;
                 break;
-            case key.end:
+            case key.end: {
                 var scrollTop = (scrollTarget !== document.body) ? scrollTarget.scrollTop : document.documentElement.scrollTop;
                 var distance = scrollTarget.scrollHeight - scrollTop - scrollTargetHeight;
                 scrollY = distance > 0 ? distance + 10 : 0;
                 break;
+            }
             case key.left:
                 scrollX = -esSettings.arrowScroll;
                 break;

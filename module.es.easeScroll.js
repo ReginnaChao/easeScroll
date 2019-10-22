@@ -1,5 +1,4 @@
 const EaseScroll = function() {
-
     // Define option defaults
     const defaults = {
         frameRate: 60,
@@ -21,56 +20,56 @@ const EaseScroll = function() {
             IE: true,
             Edge: true
         }
-    };
+    }
 
-    this.options = { ...defaults, ...arguments[0] };
-    this.options.browser = { ...defaults.browser, ...arguments[0].browser };
+    this.options = { ...defaults, ...arguments[0] }
+    this.options.browser = { ...defaults.browser, ...arguments[0].browser }
 
-    esSettings = this.options;
+    esSettings = this.options
 
-    currentBrowserBuildAllow = esSettings.browser[currentBrowser];
+    currentBrowserBuildAllow = esSettings.browser[currentBrowser]
 
-    init();
+    init()
 }
 
 // -----------------
 // Public Methods
-EaseScroll.prototype.destroy = destroy;
-EaseScroll.prototype.build = build;
+EaseScroll.prototype.destroy = destroy
+EaseScroll.prototype.build = build
 
 // -----------------
 // Private Methods
 
 function init() {
-    if (!currentBrowserBuildAllow) return false;
-    addEventListener('mousedown', mouseDownHandler);
-    addEventListener(wheelEvent, mouseWheelHandler, { passive: false });
-    addEventListener('load', loadedHandler);
+    if (!currentBrowserBuildAllow) return false
+    addEventListener('mousedown', mouseDownHandler)
+    addEventListener(wheelEvent, mouseWheelHandler, { passive: false })
+    addEventListener('load', loadedHandler)
 }
 
 function destroy() {
-    if (!currentBrowserBuildAllow) return false;
-    removeEventListener('mousedown', mouseDownHandler);
-    removeEventListener(wheelEvent, mouseWheelHandler);
-    removeEventListener('keydown', keyDownHandler);
-    isDestroy = true;
-    loaded = false;
+    if (!currentBrowserBuildAllow) return false
+    removeEventListener('mousedown', mouseDownHandler)
+    removeEventListener(wheelEvent, mouseWheelHandler)
+    removeEventListener('keydown', keyDownHandler)
+    isDestroy = true
+    loaded = false
 }
 
 function build() {
-    if (isDestroy) init();
+    if (isDestroy) init()
 }
 
 function keyListenerHandler() {
-    if (esSettings.keyboardSupport) addEventListener('keydown', keyDownHandler);
+    if (esSettings.keyboardSupport) addEventListener('keydown', keyDownHandler)
 }
 
 function loadedHandler() {
     if (document.body) {
-        const body = document.body;
-        const html = document.documentElement;
-        const windowHeight = window.innerHeight;
-        const bodyHeight = body.scrollHeight;
+        const body = document.body
+        const html = document.documentElement
+        const windowHeight = window.innerHeight
+        const bodyHeight = body.scrollHeight
         if (
             ((scrollMainEl = document.compatMode.indexOf('CSS') >= 0 ? html : body),
             (currentHoverTarget = body),
@@ -78,47 +77,47 @@ function loadedHandler() {
             (loaded = true),
             top !== self)
         )
-            isInIframe = true;
+            isInIframe = true
         else if (
             bodyHeight > windowHeight &&
             (body.offsetHeight <= windowHeight || html.offsetHeight <= windowHeight)
         ) {
-            let a = false;
+            let a = false
             const i = function() {
                 if (!a && html.scrollHeight !== document.height) {
-                    a = true;
+                    a = true
                     setTimeout(function() {
-                        html.style.height = document.height + 'px';
-                        a = false;
-                    }, 100);
+                        html.style.height = document.height + 'px'
+                        a = false
+                    }, 100)
                 }
             }
             if (((html.style.height = 'auto'), setTimeout(i, 10), scrollMainEl.offsetHeight <= windowHeight)) {
-                const div = document.createElement('div');
-                div.style.clear = 'both';
-                body.appendChild(div);
+                const div = document.createElement('div')
+                div.style.clear = 'both'
+                body.appendChild(div)
             }
         }
         if (!esSettings.fixedBackground) {
-            body.style.backgroundAttachment = 'scroll';
-            html.style.backgroundAttachment = 'scroll';
+            body.style.backgroundAttachment = 'scroll'
+            html.style.backgroundAttachment = 'scroll'
         }
     }
 }
 
 function scrollControlHandler(scrollTarget, scrollX, scrollY, ms) {
     if ((ms || (ms = 1000), resetScrollControl(scrollX, scrollY), esSettings.accelerationMax !== 1)) {
-        const r = +new Date();
-        const a = r - C;
+        const r = +new Date()
+        const a = r - C
         if (a < esSettings.accelerationDelta) {
-            let i = (1 + 30 / a) / 2;
+            let i = (1 + 30 / a) / 2
             if (i > 1) {
-                i = Math.min(i, esSettings.accelerationMax);
-                scrollX *= i;
-                scrollY *= i;
+                i = Math.min(i, esSettings.accelerationMax)
+                scrollX *= i
+                scrollY *= i
             }
         }
-        C = +new Date();
+        C = +new Date()
     }
     if (
         (M.push({
@@ -130,60 +129,60 @@ function scrollControlHandler(scrollTarget, scrollX, scrollY, ms) {
         }),
         !animationRunning)
     ) {
-        const isBody = scrollTarget === document.body;
+        const isBody = scrollTarget === document.body
         const step = function() {
-            const timestamp = +new Date();
-            let xCoord = 0;
-            let yCoord = 0;
+            const timestamp = +new Date()
+            let xCoord = 0
+            let yCoord = 0
             for (let c = 0; c < M.length; c++) {
-                const scrollSet = M[c];
-                const progress = timestamp - scrollSet.start;
-                const isAnimationEnd = progress >= esSettings.animationTime;
-                let h = isAnimationEnd ? 1 : progress / esSettings.animationTime;
-                esSettings.pulseAlgorithm && (h = p(h));
-                const m = (scrollSet.x * h - scrollSet.lastX) >> 0;
-                const w = (scrollSet.y * h - scrollSet.lastY) >> 0;
+                const scrollSet = M[c]
+                const progress = timestamp - scrollSet.start
+                const isAnimationEnd = progress >= esSettings.animationTime
+                let h = isAnimationEnd ? 1 : progress / esSettings.animationTime
+                esSettings.pulseAlgorithm && (h = p(h))
+                const m = (scrollSet.x * h - scrollSet.lastX) >> 0
+                const w = (scrollSet.y * h - scrollSet.lastY) >> 0
 
-                xCoord += m;
-                yCoord += w;
-                scrollSet.lastX += m;
-                scrollSet.lastY += w;
+                xCoord += m
+                yCoord += w
+                scrollSet.lastX += m
+                scrollSet.lastY += w
 
                 if (isAnimationEnd) {
-                    M.splice(c, 1);
-                    c--;
+                    M.splice(c, 1)
+                    c--
                 }
             }
 
             if (isBody) window.scrollBy(xCoord, yCoord)
             else {
-                if (xCoord) scrollTarget.scrollLeft += xCoord;
-                if (yCoord) scrollTarget.scrollTop += yCoord;
+                if (xCoord) scrollTarget.scrollLeft += xCoord
+                if (yCoord) scrollTarget.scrollTop += yCoord
             }
 
-            if (!scrollX && !scrollY) M = [];
+            if (!scrollX && !scrollY) M = []
 
-            if (M.length) requestAnimationFrame(step, scrollTarget, ms / esSettings.frameRate + 1);
-            else animationRunning = false;
+            if (M.length) requestAnimationFrame(step, scrollTarget, ms / esSettings.frameRate + 1)
+            else animationRunning = false
         }
-        requestAnimationFrame(step, scrollTarget, 0);
-        animationRunning = true;
+        requestAnimationFrame(step, scrollTarget, 0)
+        animationRunning = true
     }
 }
 
 function mouseWheelHandler(event) {
-    loaded || loadedHandler();
-    const mouseWheelTarget = event.target;
-    const scrollTarget = l(mouseWheelTarget);
+    loaded || loadedHandler()
+    const mouseWheelTarget = event.target
+    const scrollTarget = l(mouseWheelTarget)
     if (
         !scrollTarget ||
         event.defaultPrevented ||
         checkTagName(currentHoverTarget, 'embed') ||
         (checkTagName(mouseWheelTarget, 'embed') && /\.pdf/i.test(mouseWheelTarget.src))
     )
-        return true;
-    let scrollX = event.wheelDeltaX || -event.deltaX * 40 || 0;
-    let scrollY = event.wheelDeltaY || -event.deltaY * 40 || 0;
+        return true
+    let scrollX = event.wheelDeltaX || -event.deltaX * 40 || 0
+    let scrollY = event.wheelDeltaY || -event.deltaY * 40 || 0
     return (
         scrollX || scrollY || (scrollY = event.wheelDelta || 0),
         !esSettings.touchpadSupport && f(scrollY)
@@ -191,7 +190,7 @@ function mouseWheelHandler(event) {
             : (Math.abs(scrollX) > 1.2 && (scrollX *= esSettings.stepSize / 120),
               Math.abs(scrollY) > 1.2 && (scrollY *= esSettings.stepSize / 120),
               scrollControlHandler(scrollTarget, -scrollX, -scrollY),
-              void event.preventDefault())
+              event.preventDefault())
     )
 }
 
@@ -207,51 +206,53 @@ function keyDownHandler(event) {
     )
         return true
     if (checkTagName(target, 'button') && event.keyCode === key.spacebar) return true
-    let direction;
-    let scrollX = 0;
-    let scrollY = 0;
-    const scrollTarget = l(currentHoverTarget) || document.body;
-    let scrollTargetHeight = scrollTarget.clientHeight;
+    let direction
+    let scrollX = 0
+    let scrollY = 0
+    const scrollTarget = l(currentHoverTarget) || document.body
+    let scrollTargetHeight = scrollTarget.clientHeight
     switch ((scrollTarget === document.body && (scrollTargetHeight = window.innerHeight), event.keyCode)) {
         case key.up:
-            scrollY = -esSettings.arrowScroll;
+            scrollY = -esSettings.arrowScroll
             break
         case key.down:
-            scrollY = esSettings.arrowScroll;
+            scrollY = esSettings.arrowScroll
             break
         case key.spacebar:
-            direction = event.shiftKey ? 1 : -1;
-            scrollY = -direction * scrollTargetHeight * 0.9;
+            direction = event.shiftKey ? 1 : -1
+            scrollY = -direction * scrollTargetHeight * 0.9
             break
         case key.pageup:
-            scrollY = 0.9 * -scrollTargetHeight;
+            scrollY = 0.9 * -scrollTargetHeight
             break
         case key.pagedown:
-            scrollY = 0.9 * scrollTargetHeight;
+            scrollY = 0.9 * scrollTargetHeight
             break
         case key.home:
-            scrollY = (scrollTarget !== document.body) ? -scrollTarget.scrollTop : -document.documentElement.scrollTop;
+            scrollY = scrollTarget !== document.body ? -scrollTarget.scrollTop : -document.documentElement.scrollTop
             break
-        case key.end:
-            const scrollTop = (scrollTarget !== document.body) ? scrollTarget.scrollTop : document.documentElement.scrollTop;
-            const distance = scrollTarget.scrollHeight - scrollTop - scrollTargetHeight;
-            scrollY = distance > 0 ? distance + 10 : 0;
+        case key.end: {
+            const scrollTop =
+                scrollTarget !== document.body ? scrollTarget.scrollTop : document.documentElement.scrollTop
+            const distance = scrollTarget.scrollHeight - scrollTop - scrollTargetHeight
+            scrollY = distance > 0 ? distance + 10 : 0
             break
+        }
         case key.left:
-            scrollX = -esSettings.arrowScroll;
+            scrollX = -esSettings.arrowScroll
             break
         case key.right:
-            scrollX = esSettings.arrowScroll;
+            scrollX = esSettings.arrowScroll
             break
         default:
             return true
     }
-    scrollControlHandler(scrollTarget, scrollX, scrollY);
-    event.preventDefault();
+    scrollControlHandler(scrollTarget, scrollX, scrollY)
+    event.preventDefault()
 }
 
 function mouseDownHandler(event) {
-    currentHoverTarget = event.target;
+    currentHoverTarget = event.target
 }
 
 function i(e, t) {
@@ -260,11 +261,11 @@ function i(e, t) {
 }
 
 function l(el) {
-    const t = [];
-    const o = scrollMainEl.scrollHeight;
+    const t = []
+    const o = scrollMainEl.scrollHeight
     do {
-        const n = z[N(el)];
-        let overflow;
+        const n = z[N(el)]
+        let overflow
         if (n) return i(t, n)
         if ((t.push(el), o === el.scrollHeight)) {
             if (!isInIframe || scrollMainEl.clientHeight + 10 < o) return i(t, document.body)
@@ -278,20 +279,20 @@ function l(el) {
 }
 
 function addEventListener(eventName, func, options) {
-    window.addEventListener(eventName, func, options || false);
+    window.addEventListener(eventName, func, options || false)
 }
 
 function removeEventListener(eventName, func, options) {
-    window.removeEventListener(eventName, func);
+    window.removeEventListener(eventName, func)
 }
 
 function checkTagName(target, tagName) {
-    return (target.nodeName || '').toLowerCase() === tagName.toLowerCase();
+    return (target.nodeName || '').toLowerCase() === tagName.toLowerCase()
 }
 
 function resetScrollControl(scrollX, scrollY) {
-    scrollX = scrollX > 0 ? 1 : -1;
-    scrollY = scrollY > 0 ? 1 : -1;
+    scrollX = scrollX > 0 ? 1 : -1
+    scrollY = scrollY > 0 ? 1 : -1
     if (scrollDir.x !== scrollX || scrollDir.y !== scrollY) {
         scrollDir.x = scrollX
         scrollDir.y = scrollY
@@ -302,13 +303,13 @@ function resetScrollControl(scrollX, scrollY) {
 
 function f(scrollY) {
     if (scrollY) {
-        scrollY = Math.abs(scrollY);
-        D.push(scrollY);
-        D.shift();
-        clearTimeout(timer);
+        scrollY = Math.abs(scrollY)
+        D.push(scrollY)
+        D.shift()
+        clearTimeout(timer)
 
-        const t = D[0] === D[1] && D[1] === D[2];
-        const o = h(D[0], 120) && h(D[1], 120) && h(D[2], 120);
+        const t = D[0] === D[1] && D[1] === D[2]
+        const o = h(D[0], 120) && h(D[1], 120) && h(D[2], 120)
         return !(t || o)
     }
 }
@@ -318,7 +319,7 @@ function h(e, t) {
 }
 
 function m(e) {
-    let t, o, n;
+    let t, o, n
     return (
         (e *= esSettings.pulseScale),
         e < 1
@@ -332,17 +333,17 @@ function p(e) {
     return e >= 1 ? 1 : e <= 0 ? 0 : (esSettings.pulseNormalize === 1 && (esSettings.pulseNormalize /= m(1)), m(e))
 }
 
-let currentHoverTarget;
-let esSettings = null;
-let isInIframe = false;
+let currentHoverTarget
+let esSettings = null
+let isInIframe = false
 const scrollDir = {
     x: 0,
     y: 0
-};
-let loaded = false;
-let isDestroy = false;
-let scrollMainEl = document.documentElement;
-const D = [120, 120, 120];
+}
+let loaded = false
+let isDestroy = false
+let scrollMainEl = document.documentElement
+const D = [120, 120, 120]
 const key = {
     left: 37,
     up: 38,
@@ -353,17 +354,17 @@ const key = {
     pagedown: 34,
     end: 35,
     home: 36
-};
-let M = [];
-let animationRunning = false;
-let C = +new Date();
-let z = {};
+}
+let M = []
+let animationRunning = false
+let C = +new Date()
+let z = {}
 setInterval(function() {
-    z = {};
-}, 10000);
-let timer;
+    z = {}
+}, 10000)
+let timer
 const N = function() {
-    let e = 0;
+    let e = 0
     return function(t) {
         return t.uniqueID || (t.uniqueID = e++)
     }
@@ -377,32 +378,33 @@ const requestAnimationFrame =
     function(callback, target, delay) {
         window.setTimeout(callback, delay || 1000 / 60)
     }
-window.requestAnimationFrame = requestAnimationFrame;
+window.requestAnimationFrame = requestAnimationFrame
 
-const wheelEvent = 'onwheel' in document
-    // spec event type
-    ? 'wheel'
-    : document.onmousewheel !== undefined
-        // legacy event type
-        ? 'mousewheel'
-        // older Firefox
-        : 'DOMMouseScroll';
+const wheelEvent =
+    'onwheel' in document
+        ? // spec event type
+          'wheel'
+        : document.onmousewheel !== undefined
+        ? // legacy event type
+          'mousewheel'
+        : // older Firefox
+          'DOMMouseScroll'
 
 // Browser Detect
 // Firefox 1.0+
-const isFirefox = typeof InstallTrigger !== 'undefined';
+const isFirefox = typeof InstallTrigger !== 'undefined'
 // Safari 3.0+ "[object HTMLElementConstructor]"
 const isSafari =
     /constructor/i.test(window.HTMLElement) ||
     (function(p) {
         return p.toString() === '[object SafariRemoteNotification]'
-    })(!window.safari || (typeof window.safari !== 'undefined' && window.safari.pushNotification));
+    })(!window.safari || (typeof window.safari !== 'undefined' && window.safari.pushNotification))
 // Internet Explorer 6-11
-const isIE = /* @cc_on!@ */ false || !!document.documentMode;
+const isIE = /* @cc_on!@ */ false || !!document.documentMode
 // Edge 20+
-const isEdge = !isIE && !!window.StyleMedia;
+const isEdge = !isIE && !!window.StyleMedia
 // Chrome 1 - 71
-const isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
+const isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime)
 const currentBrowser = isFirefox
     ? 'FireFox'
     : isSafari
@@ -413,8 +415,8 @@ const currentBrowser = isFirefox
     ? 'Edge'
     : isChrome
     ? 'Chrome'
-    : null;
-let currentBrowserBuildAllow = false;
+    : null
+let currentBrowserBuildAllow = false
 // [End] Browser Detect
 
-export default EaseScroll;
+export default EaseScroll
