@@ -28,13 +28,13 @@
         }
 
         // Create options by extending defaults with the passed in arguments
-        if (arguments[0] && typeof arguments[0] === "object") {
+        if (arguments.length > 0 && arguments[0] && typeof arguments[0] === "object") {
             this.options = extendDefaults(defaults, arguments[0]);
         } else {
             this.options = defaults
         }
         // Browser Setting
-        if (arguments[0].browser && typeof arguments[0].browser === "object") {
+        if (arguments.length > 0 && arguments[0].browser && typeof arguments[0].browser === "object") {
             this.options.browser = extendDefaults(defaults.browser, arguments[0].browser);
         } else {
             this.options.browser = defaults.browser
@@ -42,7 +42,7 @@
 
         esSettings = this.options;
 
-        currentBrowserBuildAllow = esSettings.browser[currentBrowser];
+        currentBrowserBuildAllow = isMobile ? false : esSettings.browser[currentBrowser];
 
         init();
     }
@@ -335,32 +335,36 @@
             : 'DOMMouseScroll';
 
     // Browser Detect
-    // Firefox 1.0+
-    var isFirefox = typeof InstallTrigger !== 'undefined';
-    // Safari 3.0+ "[object HTMLElementConstructor]"
-    var isSafari =
-        /constructor/i.test(window.HTMLElement) ||
-        (function(p) {
-            return p.toString() === '[object SafariRemoteNotification]'
-        })(!window.safari || (typeof window.safari !== 'undefined' && window.safari.pushNotification));
-    // Internet Explorer 6-11
-    var isIE = /* @cc_on!@ */ false || !!document.documentMode;
-    // Edge 20+
-    var isEdge = !isIE && !!window.StyleMedia;
-    // Chrome 1 - 71
-    var isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
-    var currentBrowser = isFirefox
-        ? 'FireFox'
-        : isSafari
-        ? 'Safari'
-        : isIE
-        ? 'IE'
-        : isEdge
-        ? 'Edge'
-        : isChrome
-        ? 'Chrome'
-        : null;
+    function getBrowser() {
+        var browser = 'unknown';
+        var ua = navigator.userAgent;
+        if ((ua.indexOf("Opera") || ua.indexOf('OPR')) !== -1) {
+            browser = 'Opera'
+        }
+        else if (ua.indexOf("Edge") !== -1) {
+            browser = 'Edge'
+        }
+        else if (ua.indexOf("Chrome") !== -1) {
+            browser = 'Chrome'
+        }
+        else if (ua.indexOf("Safari") !== -1) {
+            browser = 'Safari'
+        }
+        else if (ua.indexOf("Firefox") !== -1) {
+            browser = 'FireFox'
+        }
+        else if ((ua.indexOf("MSIE") !== -1) || (!!document.documentMode === true)) {
+            //IF IE > 10
+            browser = 'IE'
+        }
+        else {
+            browser = 'unknown'
+        }
+        return browser;
+    }
+    var currentBrowser = getBrowser();
     var currentBrowserBuildAllow = false;
+    var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     // [End] Browser Detect
 
     window.EaseScroll = EaseScroll;

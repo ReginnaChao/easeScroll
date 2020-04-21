@@ -5,7 +5,6 @@ $.fn.easeScroll = function(options) {
 	! function() {
 
 		function init () {
-			console.log(currentBrowserBuildAllow)
 			if (!currentBrowserBuildAllow) return false;
 			addEventListener("mousedown", mouseDownHandler);
 			addEventListener(wheelEvent, mouseWheelHandler, {passive: false});
@@ -317,31 +316,34 @@ $.fn.easeScroll = function(options) {
 				: 'DOMMouseScroll';
 
 		// Browser Detect
-		// Firefox 1.0+
-		var isFirefox = typeof InstallTrigger !== 'undefined';
-		// Safari 3.0+ "[object HTMLElementConstructor]"
-		var isSafari =
-			/constructor/i.test(window.HTMLElement) ||
-			(function(p) {
-				return p.toString() === '[object SafariRemoteNotification]'
-			})(!window.safari || (typeof window.safari !== 'undefined' && window.safari.pushNotification));
-		// Internet Explorer 6-11
-		var isIE = /* @cc_on!@ */ false || !!document.documentMode;
-		// Edge 20+
-		var isEdge = !isIE && !!window.StyleMedia;
-		// Chrome 1 - 71
-		var isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
-		var currentBrowser = isFirefox
-			? 'FireFox'
-			: isSafari
-			? 'Safari'
-			: isIE
-			? 'IE'
-			: isEdge
-			? 'Edge'
-			: isChrome
-			? 'Chrome'
-			: null;
+		function getBrowser() {
+			var browser = 'unknown';
+			var ua = navigator.userAgent;
+			if ((ua.indexOf("Opera") || ua.indexOf('OPR')) !== -1) {
+				browser = 'Opera'
+			}
+			else if (ua.indexOf("Edge") !== -1) {
+				browser = 'Edge'
+			}
+			else if (ua.indexOf("Chrome") !== -1) {
+				browser = 'Chrome'
+			}
+			else if (ua.indexOf("Safari") !== -1) {
+				browser = 'Safari'
+			}
+			else if (ua.indexOf("Firefox") !== -1) {
+				browser = 'FireFox'
+			}
+			else if ((ua.indexOf("MSIE") !== -1) || (!!document.documentMode === true)) {
+				//IF IE > 10
+				browser = 'IE'
+			}
+			else {
+				browser = 'unknown'
+			}
+			return browser;
+		}
+		var currentBrowser = getBrowser();
 		var currentBrowserBuildAllow = esSettings.browser[currentBrowser];
 		// [End] Browser Detect
 
