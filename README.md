@@ -33,6 +33,7 @@ var es = $("html").easeScroll({
   arrowScroll: 50,
   touchpadSupport: true,
   fixedBackground: true,
+  disabledClass: null, // if body has this class will stop scroll, type: string: 'className' or Array ['class1', 'class2']
 
   // Browser Setting Control
   browser: {

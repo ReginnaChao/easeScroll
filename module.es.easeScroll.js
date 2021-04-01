@@ -13,6 +13,7 @@ const EaseScroll = function() {
         arrowScroll: 50,
         touchpadSupport: true,
         fixedBackground: true,
+        disabledClass: null, // if body has this class will stop scroll, type: string: 'className' or Array ['class1', 'class2']
         browser: {
             Chrome: true,
             FireFox: true,
@@ -66,8 +67,8 @@ function keyListenerHandler() {
 
 function loadedHandler() {
     if (document.body) {
-        const body = document.body
         const html = document.documentElement
+        const body = document.body
         const windowHeight = window.innerHeight
         const bodyHeight = body.scrollHeight
         if (
@@ -172,6 +173,7 @@ function scrollControlHandler(scrollTarget, scrollX, scrollY, ms) {
 
 function mouseWheelHandler(event) {
     loaded || loadedHandler()
+    if (scrollDisabled()) { return event.preventDefault() }
     const mouseWheelTarget = event.target
     const scrollTarget = l(mouseWheelTarget)
     if (
@@ -198,6 +200,7 @@ function keyDownHandler(event) {
     const target = event.target
     const isControlKeyboard =
         event.ctrlKey || event.altKey || event.metaKey || (event.shiftKey && event.keyCode !== key.spacebar)
+    if (scrollDisabled()) { return event.preventDefault() }
     if (
         /input|textarea|select|embed/i.test(target.nodeName) ||
         target.isContentEditable ||
@@ -253,6 +256,23 @@ function keyDownHandler(event) {
 
 function mouseDownHandler(event) {
     currentHoverTarget = event.target
+}
+
+function scrollDisabled() {
+    if (esSettings.disabledClass && esSettings.disabledClass !== '') {
+        if (typeof esSettings.disabledClass === 'string') {
+            if (document.body.classList.contains(esSettings.disabledClass)) {
+                return true
+            }
+        } else if (typeof esSettings.disabledClass === 'object') {
+            for(var i = 0; i < esSettings.disabledClass.length; i++) {
+                if (document.body.classList.contains(esSettings.disabledClass[i])) {
+                    return true
+                }
+            }
+        }
+    }
+    return false
 }
 
 function i(e, t) {

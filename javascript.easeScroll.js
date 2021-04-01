@@ -18,6 +18,7 @@
             arrowScroll: 50,
             touchpadSupport: true,
             fixedBackground: true,
+            disabledClass: null, // if body has this class will stop scroll, type: string: 'className' or Array ['class1', 'class2']
             browser: {
                 Chrome: true,
                 FireFox: true,
@@ -82,8 +83,8 @@
 
     function loadedHandler() {
         if (document.body) {
-            var body = document.body,
-                html = document.documentElement,
+            var html = document.documentElement,
+                body = document.body,
                 windowHeight = window.innerHeight,
                 bodyHeight = body.scrollHeight;
             if (scrollMainEl = document.compatMode.indexOf("CSS") >= 0 ? html : body, currentHoverTarget = body, keyListenerHandler(), loaded = true, top != self) isInIframe = true;
@@ -140,6 +141,7 @@
 
     function mouseWheelHandler(event) {
         loaded || loadedHandler();
+        if (scrollDisabled()) { return event.preventDefault(); }
         var mouseWheelTarget = event.target,
             scrollTarget = l(mouseWheelTarget);
         if (!scrollTarget || event.defaultPrevented || checkTagName(currentHoverTarget, "embed") || checkTagName(mouseWheelTarget, "embed") && /\.pdf/i.test(mouseWheelTarget.src)) return true;
@@ -159,6 +161,7 @@
     function keyDownHandler(event) {
         var target = event.target,
             isControlKeyboard = event.ctrlKey || event.altKey || event.metaKey || event.shiftKey && event.keyCode !== key.spacebar;
+        if (scrollDisabled()) { return event.preventDefault(); }
         if (/input|textarea|select|embed/i.test(target.nodeName) || target.isContentEditable || event.defaultPrevented || isControlKeyboard) return true;
         if (checkTagName(target, "button") && event.keyCode === key.spacebar) return true;
         var direction,
@@ -206,6 +209,23 @@
 
     function mouseDownHandler(event) {
         currentHoverTarget = event.target
+    }
+
+    function scrollDisabled() {
+        if (esSettings.disabledClass && esSettings.disabledClass !== '') {
+            if (typeof esSettings.disabledClass === 'string') {
+                if (document.body.classList.contains(esSettings.disabledClass)) {
+                    return true
+                }
+            } else if (typeof esSettings.disabledClass === 'object') {
+                for(var i = 0; i < esSettings.disabledClass.length; i++) {
+                    if (document.body.classList.contains(esSettings.disabledClass[i])) {
+                        return true
+                    }
+                }
+            }
+        }
+        return false
     }
 
     function i(e, t) {
